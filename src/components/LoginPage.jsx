@@ -1,102 +1,529 @@
-import React, { useState } from "react";
-import { User, Lock } from "lucide-react";
+// import React, { useState, useContext } from "react";
+// import { User, Lock, Mail } from "lucide-react";
+// import { login } from "../services/authService";
+// import { AuthContext } from "../context/AuthContext";
+// import { useNavigate } from "react-router-dom";
+// import axiosInstance from "../api/axiosInstance";
 
-export default function LoginPage({ onNavigate, setUser }) {
-  const [role, setRole] = useState("user"); // "user" or "admin"
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+// export default function LoginPage() {
+//   const navigate = useNavigate();
+//   const { loginUser } = useContext(AuthContext);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+//   const [form, setForm] = useState({
+//     email: "",
+//     password: "",
+//   });
 
-    // Create fake logged-in user
-    const fakeUser = {
-      name: role === "admin" ? "Admin User" : "Sarika",
-      email,
-      role,                      // <-- important, used to know admin/user
-      photo: "https://i.pravatar.cc/200",
-    };
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState("");
 
-    setUser(fakeUser);
+//   // Forgot password modal
+//   const [showResetModal, setShowResetModal] = useState(false);
+//   const [resetEmail, setResetEmail] = useState("");
+//   const [resetPassword, setResetPassword] = useState("");
+//   const [resetMessage, setResetMessage] = useState("");
 
-    // ⭐ ROLE-BASED NAVIGATION
-    if (role === "admin") {
-      // Admin goes to Admin Dashboard
-      onNavigate("admin-dashboard");
-    } else {
-      // Normal user goes to Profile page
-      onNavigate("profile");
+//   const validateForm = () => {
+//     if (!form.email.trim()) return "Email is required";
+//     if (!/\S+@\S+\.\S+/.test(form.email)) return "Invalid email format";
+//     if (!form.password.trim()) return "Password is required";
+//     if (form.password.length < 6) return "Password must be at least 6 characters";
+//     return null;
+//   };
+
+//   const handleChange = (e) => {
+//     setForm({ ...form, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError("");
+
+//     const validationError = validateForm();
+//     if (validationError) return setError(validationError);
+
+//     setLoading(true);
+
+//     try {
+//       const data = await login(form.email, form.password);
+
+//       loginUser(
+//         {
+//           userId: data.userId,
+//           email: data.email,
+//           roles: data.roles,
+//         },
+//         data.token
+//       );
+
+//       if (data.roles.includes("ADMIN")) {
+//         return navigate("/admin/dashboard");
+//       }
+
+//       navigate("/");
+//     } catch {
+//       setError("Invalid email or password");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleResetPassword = async () => {
+//     setResetMessage("");
+
+//     if (!resetEmail.trim() || !resetPassword.trim()) {
+//       return setResetMessage("Both fields are required");
+//     }
+
+//     if (!/\S+@\S+\.\S+/.test(resetEmail)) {
+//       return setResetMessage("Invalid email address");
+//     }
+
+//     if (resetPassword.length < 6) {
+//       return setResetMessage("Password must be at least 6 characters");
+//     }
+
+//     try {
+//       await axiosInstance.post("/api/v1/users/reset-password", {
+//         email: resetEmail,
+//         newPassword: resetPassword,
+//       });
+
+//       setResetMessage("Password reset successfully!");
+//     } catch {
+//       setResetMessage("Failed to reset password");
+//     }
+//   };
+
+//   return (
+//     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+//       <div className="bg-white shadow-lg rounded-xl p-6 max-w-md w-full">
+
+//         <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
+//           Login
+//         </h2>
+
+//         {error && (
+//           <p className="text-red-500 text-center mb-2">{error}</p>
+//         )}
+
+//         <form onSubmit={handleSubmit} className="space-y-4">
+
+//           {/* Email */}
+//           <div className="relative">
+//             <User className="absolute left-3 top-3 text-gray-400" size={20} />
+//             <input
+//               name="email"
+//               type="email"
+//               placeholder="Email"
+//               value={form.email}
+//               onChange={handleChange}
+//               className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring focus:ring-blue-300"
+//             />
+//           </div>
+
+//           {/* Password */}
+//           <div className="relative">
+//             <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+//             <input
+//               name="password"
+//               type="password"
+//               placeholder="Password"
+//               value={form.password}
+//               onChange={handleChange}
+//               className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring focus:ring-blue-300"
+//             />
+//           </div>
+
+//           {/* LOGIN BUTTON (FIXED) */}
+//           <button
+//             type="submit"
+//             disabled={loading}
+//             className={`w-full py-3 rounded-lg font-semibold text-white transition-all ${
+//               loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+//             }`}
+//           >
+//             {loading ? "Processing..." : "Login"}
+//           </button>
+
+//           {/* Forgot Password */}
+//           <div className="text-center">
+//             <button
+//               type="button"
+//               onClick={() => setShowResetModal(true)}
+//               className="text-blue-600 font-medium hover:underline"
+//             >
+//               Forgot Password?
+//             </button>
+//           </div>
+
+//           {/* Register */}
+//           <p className="text-center text-gray-600">
+//             Don’t have an account?{" "}
+//             <a
+//               href="/register"
+//               className="text-blue-600 font-medium hover:underline"
+//             >
+//               Register
+//             </a>
+//           </p>
+//         </form>
+//       </div>
+
+//       {/* RESET PASSWORD MODAL */}
+//       {showResetModal && (
+//         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center px-4">
+//           <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-lg space-y-4">
+//             <h2 className="text-xl font-semibold">Reset Password</h2>
+
+//             <div className="relative">
+//               <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
+//               <input
+//                 type="email"
+//                 placeholder="Email"
+//                 value={resetEmail}
+//                 onChange={(e) => setResetEmail(e.target.value)}
+//                 className="w-full pl-10 pr-4 py-3 border rounded-lg"
+//               />
+//             </div>
+
+//             <div className="relative">
+//               <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+//               <input
+//                 type="password"
+//                 placeholder="New Password"
+//                 value={resetPassword}
+//                 onChange={(e) => setResetPassword(e.target.value)}
+//                 className="w-full pl-10 pr-4 py-3 border rounded-lg"
+//               />
+//             </div>
+
+//             {resetMessage && (
+//               <p className="text-center text-sm text-blue-600">{resetMessage}</p>
+//             )}
+
+//             <button
+//               onClick={handleResetPassword}
+//               className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+//             >
+//               Reset Password
+//             </button>
+
+//             <button
+//               onClick={() => setShowResetModal(false)}
+//               className="w-full bg-gray-300 text-black py-3 rounded-lg"
+//             >
+//               Close
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+import React, { useState, useContext } from "react";
+import { User, Lock, Mail, Loader2 } from "lucide-react";
+import { login } from "../services/authService";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../api/axiosInstance";
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const { loginUser } = useContext(AuthContext);
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
+
+  // Forgot password modal
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetPassword, setResetPassword] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+
+  const validateField = (name, value) => {
+    if (name === "email") {
+      if (!value.trim()) return "Email is required";
+      if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email format";
+      return "";
+    }
+    if (name === "password") {
+      if (!value.trim()) return "Password is required";
+      if (value.length < 6) return "Password must be at least 6 characters";
+      return "";
+    }
+    return "";
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+
+    if (touched[name]) {
+      setErrors({ ...errors, [name]: validateField(name, value) });
     }
   };
 
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched({ ...touched, [name]: true });
+    setErrors({ ...errors, [name]: validateField(name, value) });
+  };
+
+  const validateAllFields = () => {
+    const newErrors = {};
+    Object.keys(form).forEach((key) => {
+      const error = validateField(key, form[key]);
+      if (error) newErrors[key] = error;
+    });
+    setErrors(newErrors);
+    setTouched({ email: true, password: true });
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setApiError("");
+
+    if (!validateAllFields()) return;
+
+    setLoading(true);
+
+    try {
+      const data = await login(form.email, form.password);
+
+      loginUser(
+        {
+          userId: data.userId,
+          email: data.email,
+          roles: data.roles,
+        },
+        data.token
+      );
+
+      if (data.roles.includes("ADMIN")) {
+        return navigate("/admin/dashboard");
+      }
+
+      navigate("/");
+    } catch (err) {
+      setApiError("Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    setResetMessage("");
+
+    if (!resetEmail.trim() || !resetPassword.trim()) {
+      setResetMessage("Both fields are required");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(resetEmail)) {
+      setResetMessage("Invalid email address");
+      return;
+    }
+
+    if (resetPassword.length < 6) {
+      setResetMessage("Password must be at least 6 characters");
+      return;
+    }
+
+    setResetLoading(true);
+
+    try {
+      await axiosInstance.post("/api/v1/users/reset-password", {
+        email: resetEmail,
+        newPassword: resetPassword,
+      });
+
+      setResetMessage("Password reset successfully!");
+    } catch (err) {
+      setResetMessage("Failed to reset password");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const closeResetModal = () => {
+    setShowResetModal(false);
+    setResetEmail("");
+    setResetPassword("");
+    setResetMessage("");
+  };
+
+  const getResetMessageColor = () => {
+    if (resetMessage.includes("success")) {
+      return "text-green-600";
+    }
+    return "text-red-500";
+  };
+
+  const getInputClass = (fieldName) => {
+    let baseClass = "w-full pl-10 pr-4 py-3 border rounded-lg focus:ring focus:ring-blue-300";
+    if (errors[fieldName] && touched[fieldName]) {
+      baseClass += " border-red-500";
+    }
+    return baseClass;
+  };
+
+  const getButtonClass = (isLoading) => {
+    let baseClass = "w-full py-3 rounded-lg font-semibold text-white transition-all flex items-center justify-center gap-2";
+    if (isLoading) {
+      baseClass += " bg-gray-400 cursor-not-allowed";
+    } else {
+      baseClass += " bg-blue-600 hover:bg-blue-700";
+    }
+    return baseClass;
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center mb-6">Login</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white shadow-lg rounded-xl p-6 max-w-md w-full">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
+          Login
+        </h2>
 
-        {/* Role Selection */}
-        <div className="flex gap-6 mb-6 justify-center">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              value="user"
-              checked={role === "user"}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            User
-          </label>
+        {apiError && (
+          <p className="text-red-500 text-center mb-2">{apiError}</p>
+        )}
 
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              value="admin"
-              checked={role === "admin"}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            Admin
-          </label>
-        </div>
-
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email */}
           <div>
-            <label className="text-sm">Email</label>
-            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 mt-1">
-              <User className="text-gray-400" size={20} />
+            <div className="relative">
+              <User className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
+                name="email"
                 type="email"
-                required
-                className="flex-1 outline-none"
-                placeholder="Type your email..."
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={getInputClass("email")}
               />
             </div>
+            {errors.email && touched.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
 
+          {/* Password */}
           <div>
-            <label className="text-sm">Password</label>
-            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 mt-1">
-              <Lock className="text-gray-400" size={20} />
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
+                name="password"
                 type="password"
-                required
-                className="flex-1 outline-none"
-                placeholder="Enter password..."
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={getInputClass("password")}
               />
             </div>
+            {errors.password && touched.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
 
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+            disabled={loading}
+            className={getButtonClass(loading)}
           >
-            Login
+            {loading && <Loader2 className="animate-spin" size={20} />}
+            {loading ? "Processing..." : "Login"}
           </button>
+
+          {/* Forgot Password */}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => setShowResetModal(true)}
+              className="text-blue-600 font-medium hover:underline"
+            >
+              Forgot Password?
+            </button>
+          </div>
+
+          <p className="text-center text-gray-600">
+  Don't have an account?{" "}
+  <a
+    href="/register"
+    className="text-blue-600 font-medium hover:underline"
+  >
+    Register
+  </a>
+</p>
+
         </form>
       </div>
+
+      {/* RESET PASSWORD MODAL */}
+      {showResetModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center px-4 z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-lg space-y-4">
+            <h2 className="text-xl font-semibold">Reset Password</h2>
+
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
+              <input
+                type="email"
+                placeholder="Email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border rounded-lg"
+              />
+            </div>
+
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+              <input
+                type="password"
+                placeholder="New Password"
+                value={resetPassword}
+                onChange={(e) => setResetPassword(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border rounded-lg"
+              />
+            </div>
+
+            {resetMessage && (
+              <p className={"text-center text-sm " + getResetMessageColor()}>
+                {resetMessage}
+              </p>
+            )}
+
+            <button
+              onClick={handleResetPassword}
+              disabled={resetLoading}
+              className={getButtonClass(resetLoading)}
+            >
+              {resetLoading && <Loader2 className="animate-spin" size={20} />}
+              {resetLoading ? "Resetting..." : "Reset Password"}
+            </button>
+
+            <button
+              onClick={closeResetModal}
+              className="w-full bg-gray-300 text-black py-3 rounded-lg hover:bg-gray-400 transition-all"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
