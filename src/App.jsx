@@ -379,6 +379,16 @@ function AppContent() {
       <main className="flex-1">
         <Routes>
 
+          <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <ProfilePage />
+    </ProtectedRoute>
+  }
+/>
+
+
           {/* ---------- AUTH ROUTES ---------- */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
