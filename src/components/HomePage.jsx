@@ -1,21 +1,205 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { ArrowRight, Smartphone, Laptop, Watch, Shirt, Home, Sparkles } from "lucide-react";
+// import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+// import { ArrowRight, Smartphone, Laptop, Watch, Shirt, Home, Sparkles } from "lucide-react";
+// import { ProductCard } from "./ProductCard";
+// import { products } from "../data/mockData";
+// import { ImageWithFallback } from "./figma/ImageWithFallback";
+// export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
+//     const trendingProducts = products.slice(0, 8);
+//     const featuredProduct = products[0];
+//     const categories = [
+//         { name: "Electronics", icon: Smartphone, count: 234 },
+//         { name: "Laptops", icon: Laptop, count: 156 },
+//         { name: "Watches", icon: Watch, count: 89 },
+//         { name: "Fashion", icon: Shirt, count: 412 },
+//         { name: "Home & Living", icon: Home, count: 178 },
+//         { name: "Beauty", icon: Sparkles, count: 203 },
+//     ];
+//     return (_jsxs("div", { children: [_jsx("section", { className: "bg-gradient-to-r from-blue-600 to-purple-600 text-white", children: _jsx("div", { className: "max-w-7xl mx-auto px-4 py-16", children: _jsxs("div", { className: "grid lg:grid-cols-2 gap-12 items-center", children: [_jsxs("div", { children: [_jsx("div", { className: "inline-block px-4 py-1 bg-white/20 rounded-full mb-4 text-sm", children: "New Arrival" }), _jsx("h1", { className: "text-5xl mb-6", children: "Discover Amazing Products at Great Prices" }), _jsx("p", { className: "text-xl mb-8 text-blue-100", children: "Shop the latest trends in electronics, fashion, and more with exclusive deals." }), _jsxs("button", { onClick: () => onNavigate('products'), className: "px-8 py-4 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2", children: ["Shop Now", _jsx(ArrowRight, { className: "w-5 h-5" })] })] }), _jsx("div", { className: "relative", children: _jsx("div", { className: "aspect-square rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm p-8", children: _jsx(ImageWithFallback, { src: featuredProduct.image, alt: featuredProduct.name, className: "w-full h-full object-cover rounded-xl" }) }) })] }) }) }), _jsxs("section", { className: "max-w-7xl mx-auto px-4 py-16", children: [_jsxs("div", { className: "text-center mb-12", children: [_jsx("h2", { className: "text-3xl mb-3", children: "Shop by Category" }), _jsx("p", { className: "text-gray-600", children: "Browse through your favorite categories" })] }), _jsx("div", { className: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6", children: categories.map((category) => {
+//                             const Icon = category.icon;
+//                             return (_jsxs("button", { onClick: () => onNavigate('products'), className: "bg-white p-6 rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all group", children: [_jsx("div", { className: "w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors", children: _jsx(Icon, { className: "w-7 h-7 text-blue-600 group-hover:text-white transition-colors" }) }), _jsx("h3", { className: "mb-1", children: category.name }), _jsxs("p", { className: "text-sm text-gray-500", children: [category.count, " items"] })] }, category.name));
+//                         }) })] }), _jsxs("section", { className: "max-w-7xl mx-auto px-4 py-16", children: [_jsxs("div", { className: "flex items-center justify-between mb-12", children: [_jsxs("div", { children: [_jsx("h2", { className: "text-3xl mb-3", children: "Trending Products" }), _jsx("p", { className: "text-gray-600", children: "Check out our most popular items" })] }), _jsxs("button", { onClick: () => onNavigate('products'), className: "px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2", children: ["View All", _jsx(ArrowRight, { className: "w-4 h-4" })] })] }), _jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6", children: trendingProducts.map((product) => (_jsx(ProductCard, { product: product, onAddToCart: onAddToCart, onProductClick: onProductClick }, product.id))) })] }), _jsx("section", { className: "max-w-7xl mx-auto px-4 py-16", children: _jsxs("div", { className: "bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl p-12 text-white text-center", children: [_jsx("h2", { className: "text-4xl mb-4", children: "Special Holiday Sale!" }), _jsx("p", { className: "text-xl mb-6 text-orange-100", children: "Get up to 50% off on selected items. Limited time offer!" }), _jsxs("div", { className: "flex items-center justify-center gap-4 mb-8", children: [_jsxs("div", { className: "bg-white/20 backdrop-blur-sm px-6 py-4 rounded-lg", children: [_jsx("div", { className: "text-3xl", children: "23" }), _jsx("div", { className: "text-sm", children: "Hours" })] }), _jsx("div", { className: "text-2xl", children: ":" }), _jsxs("div", { className: "bg-white/20 backdrop-blur-sm px-6 py-4 rounded-lg", children: [_jsx("div", { className: "text-3xl", children: "45" }), _jsx("div", { className: "text-sm", children: "Minutes" })] }), _jsx("div", { className: "text-2xl", children: ":" }), _jsxs("div", { className: "bg-white/20 backdrop-blur-sm px-6 py-4 rounded-lg", children: [_jsx("div", { className: "text-3xl", children: "12" }), _jsx("div", { className: "text-sm", children: "Seconds" })] })] }), _jsxs("button", { onClick: () => onNavigate('products'), className: "px-8 py-4 bg-white text-orange-600 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center gap-2", children: ["Shop Sale Items", _jsx(ArrowRight, { className: "w-5 h-5" })] })] }) })] }));
+// }
+
+
+import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  Smartphone,
+  Laptop,
+  Watch,
+  Shirt,
+  Home,
+  Sparkles
+} from "lucide-react";
+import axiosInstance from "../api/axiosInstance";
 import { ProductCard } from "./ProductCard";
-import { products } from "../data/mockData";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+
 export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
-    const trendingProducts = products.slice(0, 8);
-    const featuredProduct = products[0];
-    const categories = [
-        { name: "Electronics", icon: Smartphone, count: 234 },
-        { name: "Laptops", icon: Laptop, count: 156 },
-        { name: "Watches", icon: Watch, count: 89 },
-        { name: "Fashion", icon: Shirt, count: 412 },
-        { name: "Home & Living", icon: Home, count: 178 },
-        { name: "Beauty", icon: Sparkles, count: 203 },
-    ];
-    return (_jsxs("div", { children: [_jsx("section", { className: "bg-gradient-to-r from-blue-600 to-purple-600 text-white", children: _jsx("div", { className: "max-w-7xl mx-auto px-4 py-16", children: _jsxs("div", { className: "grid lg:grid-cols-2 gap-12 items-center", children: [_jsxs("div", { children: [_jsx("div", { className: "inline-block px-4 py-1 bg-white/20 rounded-full mb-4 text-sm", children: "New Arrival" }), _jsx("h1", { className: "text-5xl mb-6", children: "Discover Amazing Products at Great Prices" }), _jsx("p", { className: "text-xl mb-8 text-blue-100", children: "Shop the latest trends in electronics, fashion, and more with exclusive deals." }), _jsxs("button", { onClick: () => onNavigate('products'), className: "px-8 py-4 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2", children: ["Shop Now", _jsx(ArrowRight, { className: "w-5 h-5" })] })] }), _jsx("div", { className: "relative", children: _jsx("div", { className: "aspect-square rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm p-8", children: _jsx(ImageWithFallback, { src: featuredProduct.image, alt: featuredProduct.name, className: "w-full h-full object-cover rounded-xl" }) }) })] }) }) }), _jsxs("section", { className: "max-w-7xl mx-auto px-4 py-16", children: [_jsxs("div", { className: "text-center mb-12", children: [_jsx("h2", { className: "text-3xl mb-3", children: "Shop by Category" }), _jsx("p", { className: "text-gray-600", children: "Browse through your favorite categories" })] }), _jsx("div", { className: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6", children: categories.map((category) => {
-                            const Icon = category.icon;
-                            return (_jsxs("button", { onClick: () => onNavigate('products'), className: "bg-white p-6 rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all group", children: [_jsx("div", { className: "w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors", children: _jsx(Icon, { className: "w-7 h-7 text-blue-600 group-hover:text-white transition-colors" }) }), _jsx("h3", { className: "mb-1", children: category.name }), _jsxs("p", { className: "text-sm text-gray-500", children: [category.count, " items"] })] }, category.name));
-                        }) })] }), _jsxs("section", { className: "max-w-7xl mx-auto px-4 py-16", children: [_jsxs("div", { className: "flex items-center justify-between mb-12", children: [_jsxs("div", { children: [_jsx("h2", { className: "text-3xl mb-3", children: "Trending Products" }), _jsx("p", { className: "text-gray-600", children: "Check out our most popular items" })] }), _jsxs("button", { onClick: () => onNavigate('products'), className: "px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2", children: ["View All", _jsx(ArrowRight, { className: "w-4 h-4" })] })] }), _jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6", children: trendingProducts.map((product) => (_jsx(ProductCard, { product: product, onAddToCart: onAddToCart, onProductClick: onProductClick }, product.id))) })] }), _jsx("section", { className: "max-w-7xl mx-auto px-4 py-16", children: _jsxs("div", { className: "bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl p-12 text-white text-center", children: [_jsx("h2", { className: "text-4xl mb-4", children: "Special Holiday Sale!" }), _jsx("p", { className: "text-xl mb-6 text-orange-100", children: "Get up to 50% off on selected items. Limited time offer!" }), _jsxs("div", { className: "flex items-center justify-center gap-4 mb-8", children: [_jsxs("div", { className: "bg-white/20 backdrop-blur-sm px-6 py-4 rounded-lg", children: [_jsx("div", { className: "text-3xl", children: "23" }), _jsx("div", { className: "text-sm", children: "Hours" })] }), _jsx("div", { className: "text-2xl", children: ":" }), _jsxs("div", { className: "bg-white/20 backdrop-blur-sm px-6 py-4 rounded-lg", children: [_jsx("div", { className: "text-3xl", children: "45" }), _jsx("div", { className: "text-sm", children: "Minutes" })] }), _jsx("div", { className: "text-2xl", children: ":" }), _jsxs("div", { className: "bg-white/20 backdrop-blur-sm px-6 py-4 rounded-lg", children: [_jsx("div", { className: "text-3xl", children: "12" }), _jsx("div", { className: "text-sm", children: "Seconds" })] })] }), _jsxs("button", { onClick: () => onNavigate('products'), className: "px-8 py-4 bg-white text-orange-600 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center gap-2", children: ["Shop Sale Items", _jsx(ArrowRight, { className: "w-5 h-5" })] })] }) })] }));
+  const [products, setProducts] = useState([]);
+  const [featuredProduct, setFeaturedProduct] = useState(null);
+
+  const categories = [
+    { name: "Electronics", icon: Smartphone, count: 234 },
+    { name: "Laptops", icon: Laptop, count: 156 },
+    { name: "Watches", icon: Watch, count: 89 },
+    { name: "Fashion", icon: Shirt, count: 412 },
+    { name: "Home & Living", icon: Home, count: 178 },
+    { name: "Beauty", icon: Sparkles, count: 203 },
+  ];
+
+  useEffect(() => {
+    loadTrendingProducts();
+  }, []);
+
+  const loadTrendingProducts = async () => {
+    try {
+      const res = await axiosInstance.get("/api/v1/products");
+
+      const list = res.data.content || res.data;
+
+      const mapped = list.map((p) => ({
+        id: p.productId,
+        name: p.name,
+        brand: p.brand,
+        description: p.description,
+        price: p.price,
+        image: p.imageUrl,
+        stock: p.stock,
+        categories: p.productCategories,
+        sku: p.sku,
+
+      }));
+
+      setProducts(mapped);
+
+      if (mapped.length > 0) {
+        setFeaturedProduct(mapped[0]);
+      }
+    } catch (err) {
+      console.error("Failed to load products", err);
+    }
+  };
+
+  const trendingProducts = products.slice(0, 8);
+
+  return (
+    <div className="">
+
+      {/* HERO SECTION */}
+      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 py-16">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+            {/* HERO TEXT */}
+            <div>
+              <div className="inline-block px-4 py-1 bg-white/20 rounded-full mb-4 text-sm">
+                New Arrival
+              </div>
+              <h1 className="text-5xl mb-6">
+                Discover Amazing Products at Great Prices
+              </h1>
+              <p className="text-xl mb-8 text-blue-100">
+                Shop the latest trends in electronics, fashion, and more with exclusive deals.
+              </p>
+
+              <button
+                onClick={() => onNavigate("products")}
+                className="px-8 py-4 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
+              >
+                Shop Now <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* FEATURED PRODUCT */}
+            <div className="relative">
+              <div className="aspect-square rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm p-8">
+                {featuredProduct ? (
+                  <ImageWithFallback
+                    src={featuredProduct.image}
+                    alt={featuredProduct.name}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 rounded-xl" />
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* CATEGORIES */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl mb-3">Shop by Category</h2>
+          <p className="text-gray-600">Browse through your favorite categories</p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          {categories.map((cat) => {
+            const Icon = cat.icon;
+            return (
+              <button
+                key={cat.name}
+                onClick={() => onNavigate("products")}
+                className="bg-white p-6 rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all group"
+              >
+                <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors">
+                  <Icon className="w-7 h-7 text-blue-600 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="mb-1">{cat.name}</h3>
+                <p className="text-sm text-gray-500">{cat.count} items</p>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* TRENDING PRODUCTS */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="flex items-center justify-between mb-12">
+          <div>
+            <h2 className="text-3xl mb-3">Trending Products</h2>
+            <p className="text-gray-600">Check out our most popular items</p>
+          </div>
+          <button
+            onClick={() => onNavigate("products")}
+            className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+          >
+            View All <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {trendingProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={onAddToCart}
+              onProductClick={onProductClick}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* SALE BANNER */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl p-12 text-white text-center">
+          <h2 className="text-4xl mb-4">Special Holiday Sale!</h2>
+          <p className="text-xl mb-6 text-orange-100">
+            Get up to 50% off on selected items. Limited time offer!
+          </p>
+
+          <button
+            onClick={() => onNavigate("products")}
+            className="px-8 py-4 bg-white text-orange-600 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center gap-2"
+          >
+            Shop Sale Items <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </section>
+    </div>
+  );
 }
