@@ -1,4 +1,4 @@
-// src/api/axiosInstance.js
+
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -8,12 +8,14 @@ const axiosInstance = axios.create({
   },
 });
 
-// Attach JWT automatically
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) {
+
+  // Only attach token if valid JWT
+  if (token && token.split(".").length === 3) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 

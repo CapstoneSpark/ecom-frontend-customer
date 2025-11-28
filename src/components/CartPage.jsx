@@ -106,7 +106,7 @@ export default function CartPage() {
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
-            <div key={item.id || item.productId} className="bg-white rounded-xl border border-gray-200 p-6 flex gap-6">
+            <div key={item.sku || item.productId} className="bg-white rounded-xl border border-gray-200 p-6 flex gap-6">
               <div className="w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
                 <ImageWithFallback src={item.image || item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
               </div>

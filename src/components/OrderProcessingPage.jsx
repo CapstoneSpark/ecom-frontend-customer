@@ -1,45 +1,38 @@
-// src/components/OrderProcessingPage.jsx
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { OrderAPI } from "../api/orderApi";
 import { toast } from "sonner";
 
 export function OrderProcessingPage() {
-  const { id } = useParams(); // Razorpay orderId
+  const { id } = useParams(); // Razorpay order ID (used as idempotency key)
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function verifyOrder() {
+    async function checkStatus() {
       try {
-        // call backend order service
-        const res = await OrderAPI.getOrder(id);
+        console.log("Checking:", id);
 
-        if (!res || !res.data) {
-          navigate(`/order/failed/${id}`);
-          return;
-        }
-
+        const res = await OrderAPI.getByIdempotency(id);
         const order = res.data;
 
-        if (order.paymentStatus === "PAID" &&
-            (order.orderStatus === "PLACED" || order.orderStatus === "PROCESSING")) 
-        {
-          navigate(`/order/success/${id}`);
+        if (order.paymentStatus === "PAID") {
+          navigate(`/order/success/${order.orderId}`);
         } else {
-          navigate(`/order/failed/${id}`);
+          navigate(`/order/failed/${order.orderId}`);
         }
-
       } catch (err) {
+        console.error(err);
+        toast.error("Failed to verify order");
         navigate(`/order/failed/${id}`);
       }
     }
 
-    verifyOrder();
+    checkStatus();
   }, [id, navigate]);
 
   return (
-    <div className="py-20 text-center text-xl text-gray-600">
-      Checking payment status...
+    <div className="py-20 text-center text-xl">
+      Verifying your payment...
     </div>
   );
 }
