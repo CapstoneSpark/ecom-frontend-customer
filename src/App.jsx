@@ -398,6 +398,32 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/order/processing/:id"
+            element={
+              <ProtectedRoute>
+                <OrderProcessingPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/order/success/:id"
+            element={
+              <ProtectedRoute>
+                <OrderConfirmationPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/order/failed/:id"
+            element={
+              <ProtectedRoute>
+                <OrderFailedConfirmationPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/cart"
