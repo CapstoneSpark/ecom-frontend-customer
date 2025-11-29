@@ -1,13 +1,19 @@
 // src/routes/ProtectedRoute.jsx
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-export default function ProtectedRoute({ children }) {
-  const { token } = useContext(AuthContext);
+export default function ProtectedRoute({ children, adminOnly = false }) {
+  const { user } = useContext(AuthContext);
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  // Not logged in → redirect to login
+  if (!user) return <Navigate to="/login" replace />;
+
+  const roles = user.roles || [];
+
+  // Admin route check
+  if (adminOnly && !roles.includes("ADMIN")) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
