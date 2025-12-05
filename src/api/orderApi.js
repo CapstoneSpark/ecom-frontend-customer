@@ -1,20 +1,5 @@
 
 
-
-// import axiosInstance from "../api/axiosInstance";
-
-// export const OrderAPI = {
-//   getByIdempotency: (key) =>
-//     axiosInstance.get(`/api/v1/orders/by-idempotency/${key}`),
-
-//   getUserOrders: (userId) =>
-//     axiosInstance.get(`/api/v1/orders?userId=${userId}`),
-
-//   cancelOrder: (orderId) =>
-//     axiosInstance.post(`/api/v1/orders/${orderId}/cancel`),
-// };
-
-
 import axiosInstance from "./axiosInstance";
 
 function normalizeError(err) {

@@ -23,6 +23,7 @@ export default function CartPage() {
     setLoading(true);
     try {
       const res = await CartAPI.getCart(userId);
+        console.log("CART ITEM:", res.data);
       setCart(res.data);
     } catch (err) {
       console.error("Failed to load cart", err);
@@ -118,20 +119,20 @@ export default function CartPage() {
                     <p className="text-sm text-gray-600">{item.brand}</p>
                   </div>
 
-                  <button onClick={() => handleRemove(item.productId || item.sku)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                  <button onClick={() => handleRemove(item.sku || item.productId)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
 
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center border border-gray-300 rounded-lg">
-                    <button onClick={() => handleSetQuantity(item.productId || item.sku, Math.max(1, (item.quantity || 1) - 1))} className="px-3 py-2 hover:bg-gray-50">
+                    <button onClick={() => handleSetQuantity(item.sku || item.productId, Math.max(1, (item.quantity || 1) - 1))} className="px-3 py-2 hover:bg-gray-50">
                       <Minus className="w-4 h-4" />
                     </button>
 
                     <span className="px-6 py-2 border-x border-gray-300">{item.quantity || 1}</span>
 
-                    <button onClick={() => handleSetQuantity(item.productId || item.sku, Math.min((item.stock || 9999), (item.quantity || 1) + 1))} className="px-3 py-2 hover:bg-gray-50">
+                    <button onClick={() => handleSetQuantity(item.sku || item.productId, Math.min((item.stock || 9999), (item.quantity || 1) + 1))} className="px-3 py-2 hover:bg-gray-50">
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>

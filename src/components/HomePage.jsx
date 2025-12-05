@@ -1,6 +1,7 @@
 
 
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useContext } from "react";
 import {
   ArrowRight,
   Smartphone,
@@ -11,15 +12,89 @@ import {
   Sparkles,
   Search,
 } from "lucide-react";
+
 import axiosInstance from "../api/axiosInstance";
 import { ProductCard } from "./ProductCard";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { AuthContext } from "../context/AuthContext";
 
 export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
   const [products, setProducts] = useState([]);
   const [featuredProduct, setFeaturedProduct] = useState(null);
   const [categoriesFromDb, setCategoriesFromDb] = useState([]);
 
+  const { user } = useContext(AuthContext);
+
+  const isLoggedIn = Boolean(
+    user?.id ||
+      user?.userId ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("accessToken")
+  );
+
+  // -----------------------------------------------------------
+  // STATIC PRODUCTS (FOR PRELOGIN DISPLAY)
+  // -----------------------------------------------------------
+  const STATIC_PRODUCTS = [
+    {
+      id: 101,
+      name: "Nike Air Force 1",
+      brand: "Nike",
+      price: 7999,
+      originalPrice: 7999,
+      rating: 5,
+      image:
+        "https://ecommercefashion-01.s3.ap-southeast-2.amazonaws.com/Nike+Air+Force+1.png",
+      sku: "STATIC-SONY",
+    },
+    {
+      id: 102,
+      name: "Woodland Leather Boots",
+      brand: "Woodland",
+      price: 5999,
+      originalPrice: 5999,
+      rating: 4,
+      image:
+        "https://ecommercefashion-01.s3.ap-southeast-2.amazonaws.com/Woodland+Leather+Boots.png",
+      sku: "STATIC-WATCH",
+    },
+    {
+      id: 103,
+      name: "H&M Hoodie",
+      brand: "H&M ",
+      price: 1999,
+      originalPrice: 1999,
+      rating: 5,
+      image:
+        "https://ecommercefashion-01.s3.ap-southeast-2.amazonaws.com/H%26M+Hoodie.png",
+      sku: "STATIC-SONY",
+    },
+    {
+      id: 104,
+      name: "Titan Raga Watch",
+      brand: "Titan",
+      price: 5499,
+      originalPrice: 5499,
+      rating: 4,
+      image:
+        "https://ecommercefashion-01.s3.ap-southeast-2.amazonaws.com/Titan+Raga+Watch.png",
+      sku: "STATIC-DELL",
+    },
+  ];
+
+  // -----------------------------------------------------------
+  // STATIC CATEGORIES
+  // -----------------------------------------------------------
+  const STATIC_CATEGORIES = [
+    { id: 1, name: "Mobiles", iconName: "Smartphone", count: 120 },
+    { id: 2, name: "Laptops", iconName: "Laptop", count: 80 },
+    { id: 3, name: "Watches", iconName: "Watch", count: 40 },
+    { id: 4, name: "Fashion", iconName: "Shirt", count: 200 },
+    { id: 5, name: "Home", iconName: "Home", count: 150 },
+    { id: 6, name: "Special Deals", iconName: "Sparkles", count: 65 },
+  ];
+
+  // ICON MAP
   const ICONS = {
     Smartphone,
     Laptop,
@@ -30,10 +105,20 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
     default: Search,
   };
 
+  // -----------------------------------------------------------
+  // LOAD DATA
+  // -----------------------------------------------------------
   useEffect(() => {
+    if (!isLoggedIn) {
+      setProducts(STATIC_PRODUCTS);
+      setCategoriesFromDb(STATIC_CATEGORIES);
+      setFeaturedProduct(STATIC_PRODUCTS[0]);
+      return;
+    }
+
     loadTrendingProducts();
     loadCategories();
-  }, []);
+  }, [isLoggedIn]);
 
   const loadTrendingProducts = async () => {
     try {
@@ -66,7 +151,6 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
 
       const first6 = list.slice(0, 6);
 
-      // Load correct product count like CategoriesPage
       const categoriesWithCounts = await Promise.all(
         first6.map(async (cat) => {
           try {
@@ -91,7 +175,12 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
               count: productCount,
             };
           } catch {
-            return { id: cat.categoryId, name: cat.name, iconName: cat.iconName, count: 0 };
+            return {
+              id: cat.categoryId,
+              name: cat.name,
+              iconName: cat.iconName,
+              count: 0,
+            };
           }
         })
       );
@@ -103,16 +192,34 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
     }
   };
 
-  const trendingProducts = products.slice(0, 8);
-
-  const handleCategoryClick = (cat) => {
-    try {
-      onNavigate("categories", cat.id);
-    } catch {
-      onNavigate("categories");
-    }
+  // -----------------------------------------------------------
+  // SAFE NAVIGATION (PRELOGIN → redirect to login)
+  // -----------------------------------------------------------
+  const safeNavigate = (...args) => {
+    if (!isLoggedIn) return onNavigate("login");
+    return onNavigate(...args);
   };
 
+  const safeProductClick = (product) => {
+    if (!isLoggedIn) return onNavigate("login");
+    return onProductClick(product);
+  };
+
+  const safeAddToCart = (product) => {
+    if (!isLoggedIn) return onNavigate("login");
+    return onAddToCart(product);
+  };
+
+  const safeCategoryClick = (cat) => {
+    if (!isLoggedIn) return onNavigate("login");
+    return onNavigate("categories", cat.id);
+  };
+
+  const trendingProducts = products.slice(0, 8);
+
+  // -----------------------------------------------------------
+  // UI (UNTOUCHED)
+  // -----------------------------------------------------------
   return (
     <div className="">
       {/* HERO */}
@@ -131,7 +238,7 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
               </p>
 
               <button
-                onClick={() => onNavigate("products")}
+                onClick={() => safeNavigate("products")}
                 className="px-8 py-4 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
               >
                 Shop Now <ArrowRight className="w-5 h-5" />
@@ -169,7 +276,7 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
             return (
               <button
                 key={cat.id}
-                onClick={() => handleCategoryClick(cat)}
+                onClick={() => safeCategoryClick(cat)}
                 className="bg-white p-6 rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all group"
               >
                 <div className="text-center">
@@ -185,10 +292,9 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
           })}
         </div>
 
-        {/* SINGLE ARROW AT END */}
         <div className="flex justify-end mt-6">
           <button
-            onClick={() => onNavigate("categories")}
+            onClick={() => safeNavigate("categories")}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
           >
             View All Categories <ArrowRight className="w-4 h-4" />
@@ -204,7 +310,7 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
             <p className="text-gray-600">Check out our most popular items</p>
           </div>
           <button
-            onClick={() => onNavigate("products")}
+            onClick={() => safeNavigate("products")}
             className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
             View All <ArrowRight className="w-4 h-4" />
@@ -216,8 +322,8 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
             <ProductCard
               key={product.id}
               product={product}
-              onAddToCart={onAddToCart}
-              onProductClick={onProductClick}
+              onAddToCart={() => safeAddToCart(product)}
+              onProductClick={() => safeProductClick(product)}
             />
           ))}
         </div>
@@ -232,7 +338,7 @@ export function HomePage({ onAddToCart, onProductClick, onNavigate }) {
           </p>
 
           <button
-            onClick={() => onNavigate("products")}
+            onClick={() => safeNavigate("products")}
             className="px-8 py-4 bg-white text-orange-600 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center gap-2"
           >
             Shop Sale Items <ArrowRight className="w-5 h-5" />

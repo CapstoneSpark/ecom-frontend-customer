@@ -1,6 +1,3 @@
-
-
-
 import { useNavigate } from "react-router-dom";
 import { Star, ShoppingCart, Heart } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";

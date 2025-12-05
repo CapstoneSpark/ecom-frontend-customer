@@ -1,4 +1,6 @@
 
+
+
 // src/components/CheckoutPage.jsx
 
 import { useState, useEffect, useContext, useRef } from "react";
@@ -9,6 +11,7 @@ import { AuthContext } from "../context/AuthContext";
 import { PaymentAPI } from "../api/paymentApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { loadRazorpayScript } from "../utils/loadRazorpay";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -20,9 +23,6 @@ export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const isMountedRef = useRef(true);
-  useEffect(() => () => { isMountedRef.current = false; }, []);
-
   const [shippingAddress, setShippingAddress] = useState({
     fullName: "",
     phone: "",
@@ -32,6 +32,12 @@ export default function CheckoutPage() {
     zipCode: "",
     country: "India",
   });
+
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+
+  const isMountedRef = useRef(true);
+  useEffect(() => () => { isMountedRef.current = false; }, []);
 
   // Load cart items
   const loadCart = async () => {
@@ -58,25 +64,37 @@ export default function CheckoutPage() {
   );
   const shipping = subtotal > 100 ? 0 : 15;
   const tax = subtotal * 0.1;
-  const total = subtotal + shipping + tax;
+  const total = subtotal + shipping + tax - discount;
 
-  // STEP 1 — Move to Payment Page (No Razorpay yet)
+  // Apply promo code
+  const applyPromoCode = () => {
+    if (promoCode.trim().toUpperCase() === "SAVE10") {
+      setDiscount(10); // 10 currency units discount
+      toast.success("Promo code applied successfully!");
+    } else {
+      toast.error("Invalid promo code");
+      setDiscount(0);
+    }
+  };
+
+  // STEP 1 — Move to Payment Page
   const goToPaymentStep = (e) => {
     e.preventDefault();
-
     if (!shippingAddress.fullName || !shippingAddress.phone || !shippingAddress.address) {
       toast.error("Please complete shipping details");
       return;
     }
-
     setStep("payment");
   };
 
-  // STEP 2 — Actually Create Order & Open Razorpay
+  // STEP 2 — Create Order & Open Razorpay
   const startPayment = async () => {
     setProcessing(true);
 
     try {
+      // Dynamically load Razorpay SDK
+      await loadRazorpayScript();
+
       const rpOrder = await PaymentAPI.createOrder({
         amount: Math.round(total * 100),
         currency: "INR",
@@ -128,21 +146,15 @@ export default function CheckoutPage() {
         theme: { color: "#3399cc" },
       };
 
-      if (!window.Razorpay) {
-        throw new Error("Razorpay SDK not loaded");
-      }
-
       const razorpay = new window.Razorpay(options);
       razorpay.open();
-
     } catch (err) {
       console.error("Payment init failed:", err);
-      toast.error("Failed to initialize payment");
+      toast.error(err.message || "Failed to initialize payment");
       setProcessing(false);
     }
   };
 
-  // Empty cart or loading UI
   if (loading) {
     return (
       <div className="py-20 text-center">
@@ -250,10 +262,31 @@ export default function CheckoutPage() {
                   <span>Secure Razorpay Payment</span>
                 </div>
 
+                {/* Promo Code Input */}
+                <div className="mt-6">
+                  <label className="block text-sm mb-2">Promo Code</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter promo code"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      className="flex-1 px-4 py-2 border rounded-lg"
+                    />
+                    <button
+                      onClick={applyPromoCode}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+
                 <button
                   disabled={processing}
                   onClick={startPayment}
-                  className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg">
+                  className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg"
+                >
                   Pay ₹{total.toFixed(2)}
                 </button>
               </div>
@@ -281,9 +314,9 @@ export default function CheckoutPage() {
               <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal.toFixed(2)}</span></div>
               <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? "FREE" : `₹${shipping}`}</span></div>
               <div className="flex justify-between"><span>Tax</span><span>₹{tax.toFixed(2)}</span></div>
+              {discount > 0 && <div className="flex justify-between text-green-600"><span>Discount</span><span>-₹{discount.toFixed(2)}</span></div>}
               <div className="flex justify-between text-lg font-bold"><span>Total</span><span className="text-blue-600">₹{total.toFixed(2)}</span></div>
             </div>
-
           </div>
         </div>
       </div>

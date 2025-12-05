@@ -1,8 +1,9 @@
 
+
 import { useEffect, useState, useMemo } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { ProductCard } from "./ProductCard";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { Range } from "react-range";
 
 export function ProductListPage({ onAddToCart, onProductClick }) {
@@ -13,9 +14,14 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const MAX_PRICE_LIMIT = 500000; // upper bound for slider
+  // Pagination
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const PAGE_SIZE = 20;
 
-  // PRICE SLIDER STATE
+  const MAX_PRICE_LIMIT = 500000;
+
+  // Price Slider
   const [priceRange, setPriceRange] = useState([0, MAX_PRICE_LIMIT]);
 
   // Filters
@@ -25,22 +31,17 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
   const [sort, setSort] = useState("relevance");
 
   // ------------------------------------------------------------
-  // INITIAL LOAD
-  // ------------------------------------------------------------
-  useEffect(() => {
-    fetchCategories();
-    fetchAllProducts();
-  }, []);
-
-  // ------------------------------------------------------------
-  // FETCH ALL PRODUCTS
+  // FETCH ALL PRODUCTS (PAGINATED)
   // ------------------------------------------------------------
   const fetchAllProducts = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get("/api/v1/products");
 
-      const list = res.data?.content || res.data || [];
+      const res = await axiosInstance.get("/api/v1/products", {
+        params: { page, size: PAGE_SIZE },
+      });
+
+      const list = res.data?.content || [];
 
       const normalized = list.map((p) => ({
         id: p.productId ?? p.id,
@@ -53,23 +54,20 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
       }));
 
       setAllProducts(normalized);
+      setTotalPages(res.data.totalPages);
       setBrands([...new Set(normalized.map((p) => p.brand).filter(Boolean))]);
-
     } finally {
       setLoading(false);
     }
   };
 
   // ------------------------------------------------------------
-  // FETCH PRODUCTS BY CATEGORY (BACKEND FILTER)
+  // FETCH PRODUCTS BY CATEGORY
   // ------------------------------------------------------------
   const fetchProductsByCategory = async (categoryId) => {
     try {
       setLoading(true);
-
-      const res = await axiosInstance.get(
-        `/api/v1/product-categories/category/${categoryId}`
-      );
+      const res = await axiosInstance.get(`/api/v1/product-categories/category/${categoryId}`);
 
       const raw = Array.isArray(res.data)
         ? res.data
@@ -92,7 +90,8 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
 
       setAllProducts(mapped);
       setBrands([...new Set(mapped.map((p) => p.brand).filter(Boolean))]);
-
+      setTotalPages(1); // Because category fetch loads all at once
+      setPage(0);
     } finally {
       setLoading(false);
     }
@@ -107,11 +106,22 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
   };
 
   // ------------------------------------------------------------
-  // ON CATEGORY CHANGE → FETCH
+  // INITIAL LOAD
   // ------------------------------------------------------------
   useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Fetch products when page changes OR category changes
+  useEffect(() => {
     if (!selectedCategory) fetchAllProducts();
-    else fetchProductsByCategory(selectedCategory);
+  }, [page]);
+
+  useEffect(() => {
+    if (!selectedCategory) {
+      setPage(0);
+      fetchAllProducts();
+    } else fetchProductsByCategory(selectedCategory);
   }, [selectedCategory]);
 
   // ------------------------------------------------------------
@@ -121,13 +131,9 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
     let list = [...allProducts];
 
     const [minPrice, maxPrice] = priceRange;
-
-    list = list.filter(
-      (p) => p.price >= minPrice && p.price <= maxPrice
-    );
+    list = list.filter((p) => p.price >= minPrice && p.price <= maxPrice);
 
     if (selectedBrand) list = list.filter((p) => p.brand === selectedBrand);
-
     if (inStock) list = list.filter((p) => p.stock > 0);
 
     if (sort === "priceLow") list.sort((a, b) => a.price - b.price);
@@ -137,7 +143,7 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
   }, [allProducts, selectedBrand, priceRange, inStock, sort]);
 
   // ------------------------------------------------------------
-  // CLEAR FILTERS (except category)
+  // CLEAR FILTERS
   // ------------------------------------------------------------
   const clearFilters = () => {
     setSelectedBrand("");
@@ -153,17 +159,13 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex gap-6">
 
-        {/* FILTER SIDEBAR */}
+        {/* ---------------- FILTER SIDEBAR ---------------- */}
         <aside className="hidden lg:block w-64">
           <div className="bg-white rounded-xl border p-4 space-y-6 shadow-sm">
 
-            {/* HEADER */}
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold">Filters</h2>
-              <button
-                className="text-red-500 text-sm"
-                onClick={clearFilters}
-              >
+              <button className="text-red-500 text-sm" onClick={clearFilters}>
                 Clear
               </button>
             </div>
@@ -178,9 +180,7 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
               >
                 <option value="">All</option>
                 {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
+                  <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
             </div>
@@ -195,9 +195,7 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
               >
                 <option value="">All</option>
                 {brands.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
+                  <option key={b} value={b}>{b}</option>
                 ))}
               </select>
             </div>
@@ -213,33 +211,22 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
                 values={priceRange}
                 onChange={(values) => setPriceRange(values)}
                 renderTrack={({ props, children }) => (
-                  <div
-                    {...props}
-                    className="w-full h-2 bg-gray-200 rounded-full"
-                  >
-                    <div className="h-2 bg-blue-600 rounded-full"
+                  <div {...props} className="w-full h-2 bg-gray-200 rounded-full">
+                    <div
+                      className="h-2 bg-blue-600 rounded-full"
                       style={{
-                        width: `${
-                          ((priceRange[1] - priceRange[0]) / MAX_PRICE_LIMIT) *
-                          100
-                        }%`,
-                        marginLeft: `${
-                          (priceRange[0] / MAX_PRICE_LIMIT) * 100
-                        }%`,
+                        width: `${((priceRange[1] - priceRange[0]) / MAX_PRICE_LIMIT) * 100}%`,
+                        marginLeft: `${(priceRange[0] / MAX_PRICE_LIMIT) * 100}%`,
                       }}
                     />
                     {children}
                   </div>
                 )}
                 renderThumb={({ props }) => (
-                  <div
-                    {...props}
-                    className="w-4 h-4 bg-blue-600 rounded-full shadow-md cursor-pointer"
-                  />
+                  <div {...props} className="w-4 h-4 bg-blue-600 rounded-full shadow-md cursor-pointer" />
                 )}
               />
 
-              {/* Display selected range */}
               <div className="flex justify-between text-sm mt-2 text-gray-700">
                 <span>₹{priceRange[0]}</span>
                 <span>₹{priceRange[1]}</span>
@@ -259,7 +246,7 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
           </div>
         </aside>
 
-        {/* PRODUCT GRID */}
+        {/* ---------------- PRODUCT GRID ---------------- */}
         <main className="flex-1">
 
           {/* SORTING */}
@@ -282,15 +269,11 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
             </select>
           </div>
 
-          {/* NO PRODUCTS FOUND */}
+          {/* NO PRODUCTS */}
           {!loading && filteredProducts.length === 0 && (
             <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-              <h2 className="text-xl font-semibold text-gray-700 mb-3">
-                No products found
-              </h2>
-              <p className="text-gray-500 mb-6">
-                No items match your applied filters.
-              </p>
+              <h2 className="text-xl font-semibold text-gray-700 mb-3">No products found</h2>
+              <p className="text-gray-500 mb-6">No items match your applied filters.</p>
               <button
                 onClick={() => {
                   clearFilters();
@@ -303,18 +286,47 @@ export function ProductListPage({ onAddToCart, onProductClick }) {
             </div>
           )}
 
-          {/* RESULTS GRID */}
+          {/* PRODUCT GRID */}
           {!loading && filteredProducts.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={onAddToCart}
-                  onProductClick={onProductClick}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={onAddToCart}
+                    onProductClick={onProductClick}
+                  />
+                ))}
+              </div>
+
+              {/* PAGINATION */}
+              {!selectedCategory && (
+                <div className="flex justify-center items-center gap-4 mt-8">
+                  <button
+                    disabled={page === 0}
+                    onClick={() => setPage(page - 1)}
+                    className={`px-4 py-2 border rounded-lg ${page === 0 ? "opacity-50" : ""}`}
+                  >
+                    Previous
+                  </button>
+
+                  <span className="text-sm font-medium">
+                    Page {page + 1} of {totalPages}
+                  </span>
+
+                  <button
+                    disabled={page + 1 >= totalPages}
+                    onClick={() => setPage(page + 1)}
+                    className={`px-4 py-2 border rounded-lg ${
+                      page + 1 >= totalPages ? "opacity-50" : ""
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
           {loading && <p className="text-gray-600">Loading...</p>}

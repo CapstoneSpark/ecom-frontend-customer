@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children, adminOnly = false }) {
   const { user } = useContext(AuthContext);
 
   // Not logged in → redirect to login
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/" replace />;
 
   const roles = user.roles || [];
 

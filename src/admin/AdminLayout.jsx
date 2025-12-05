@@ -1,55 +1,5 @@
 
 
-// import { useAuth } from "../context/AuthContext";
-// import { LogOut } from "lucide-react";
-// import { Link } from "react-router-dom";
-
-// export default function AdminLayout({ children }) {
-//   const { user, logout } = useAuth();
-
-//   return (
-//     <div className="flex min-h-screen bg-gray-100">
-
-//       {/* Sidebar */}
-//       <aside className="w-64 bg-white shadow-md p-6">
-//         <h2 className="text-2xl font-bold mb-8">Admin Panel</h2>
-
-//         <nav className="flex flex-col gap-4">
-//           <Link to="/admin/dashboard" className="hover:text-blue-600">Dashboard</Link>
-//           <Link to="/admin/users" className="hover:text-blue-600">Users</Link>
-//           <Link to="/admin/products" className="hover:text-blue-600">Products</Link>
-//           <Link to="/admin/categories" className="hover:text-blue-600">Categories</Link>
-//           <Link to="/admin/orders" className="hover:text-blue-600">Orders</Link>
-//         </nav>
-//       </aside>
-
-//       {/* Main Content */}
-//       <div className="flex-1 flex flex-col">
-
-//         {/* Admin Header */}
-//         <header className="w-full bg-white shadow-sm px-6 py-4 flex justify-end items-center gap-6">
-          
-//           <div className="text-right">
-//             <p className="text-sm font-semibold">{user?.email}</p>
-//             <p className="text-xs text-gray-600">{user?.roles?.join(", ")}</p>
-//           </div>
-
-//           <button
-//             onClick={logout}
-//             className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-//           >
-//             <LogOut size={18} />
-//             Logout
-//           </button>
-//         </header>
-
-//         <main className="flex-1 p-6">{children}</main>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 import { useAuth } from "../context/AuthContext";
 import { LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";

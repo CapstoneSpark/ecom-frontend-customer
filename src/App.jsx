@@ -363,14 +363,26 @@ function AppContent() {
           <Route path="/register" element={<RegisterPage />} />
 
           {/* NORMAL USER ROUTES */}
-          <Route
+          {/* <Route
             path="/"
             element={
               <ProtectedRoute>
                 <HomePage onAddToCart={handleAddToCart} onNavigate={onNavigate} />
               </ProtectedRoute>
             }
+          /> */}
+
+          <Route
+            path="/"
+            element={
+              <HomePage
+                onAddToCart={handleAddToCart}
+                onNavigate={onNavigate}
+                onProductClick={onNavigate}
+              />
+            }
           />
+
 
           <Route
             path="/products"
